@@ -1,19 +1,31 @@
 package org.example;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-public class StringList {
-    private String [] data;
+public class IntegerList {
+    public static void main(String[] args) {
+        IntegerList list = new IntegerList(50);
+        for (int i = 10; i >= 0; i--) {
+            list.add(i);
+        }
+//        System.out.println((list.contains(5)));
+        System.out.println(Arrays.toString(list.toArray()));
+
+        Integer[] arr = list.sortedSelection();
+        System.out.println(Arrays.toString(arr));
+    }
+    private Integer[] data;
     private int size;
     private int currentLength;
 
-    public StringList(int startLength) {
-        data = new String[startLength];
+    public IntegerList(int startLength) {
+        data = new Integer[startLength];
         size = 0;
         this.currentLength = startLength;
     }
     // Добавление элемента.// Вернуть добавленный элемент// в качестве результата выполнения.
-    public String add(String item) {
+    public Integer add(Integer item) {
         if (size == currentLength){
             currentLength = currentLength + currentLength /2;
             data = Arrays.copyOf(data, currentLength);
@@ -29,20 +41,21 @@ public class StringList {
     // выбросить исключение.
     // Вернуть добавленный элемент
     // в качестве результата выполнения.
-    public String add(int index, String item) {
-        if ((index < 0) || (index > size - 1)) {
+    public Integer add(int index, Integer item) {
+        if ((index >= 0) && (index <= size - 1)) {
+            if (size == currentLength) {
+                currentLength = currentLength + currentLength / 2;
+                data = Arrays.copyOf(data, currentLength);
+            }
+            for (int i = size; i >= index; i--) {
+                data[i + 1] = data[i];
+            }
+            size++;
+            data[index] = item;
+            return data[index];
+        } else {
             throw new ExceedingSizeException("Индекс выходит за переделы диапазона");
         }
-        if (size == currentLength) {
-            currentLength = currentLength + currentLength / 2;
-            data = Arrays.copyOf(data, currentLength);
-        }
-        for (int i = size; i >= index; i--) {
-            data[i + 1] = data[i];
-        }
-        size++;
-        data[index] = item;
-        return data[index];
     }
     // Сравнить текущий список с другим.
     // Вернуть true/false или исключение,
@@ -54,7 +67,7 @@ public class StringList {
         }
         if (this == o) return true;
         if (getClass() != o.getClass()) return false;
-        StringList that = (StringList) o;
+        IntegerList that = (IntegerList) o;
         return size == that.size && Arrays.equals(data, that.data);
     }
 
@@ -65,7 +78,7 @@ public class StringList {
     // если индекс больше
     // фактического количества элементов
     // или выходит за пределы массива.
-    public String set(int index, String item){
+    public Integer set(int index, Integer item){
         if ((index < 0) || (index > size - 1)) {
             throw new ExceedingSizeException("Индекс выходит за переделы диапазона");
         }
@@ -77,10 +90,10 @@ public class StringList {
     // Вернуть удаленный элемент
     // или исключение, если подобный
     // элемент отсутствует в списке.
-    public String remove(String item) {
+    public Integer remove(Integer item) {
         for (int i = 0; i < size; i++) {
             if (item.equals(data[i])) {
-                String s = data[i];
+                Integer s = data[i];
                 for (int j = i; j < size; j++) {
                     data[j] = data[j+1];
                 }
@@ -95,11 +108,11 @@ public class StringList {
     // Вернуть удаленный элемент
     // или исключение, если подобный
 //     элемент отсутствует в списке.
-    public String remove(int index) {
+    public Integer remove(int index) {
         if ((index < 0) || (index > size - 1)) {
             throw new ExceedingSizeException("Индекс выходит за переделы диапазона");
         }
-        String s = data[index];
+        Integer s = data[index];
         for (int j = index; j < size; j++) {
             data[j] = data[j+1];
         }
@@ -109,17 +122,17 @@ public class StringList {
 
     // Проверка на существование элемента.
     // Вернуть true/false;
-    public boolean contains(String item) {
+    /*public boolean contains(Integer item) {
         for (int i = 0; i < size; i++) {
             if (item.equals(data[i])) {
                 return true;
             }
         }
         return false;
-    }
+    }*/
 
     // Поиск элемента.// Вернуть индекс элемента// или -1 в случае отсутствия.
-    public int indexOf(String item) {
+    public int indexOf(Integer item) {
         for (int i = 0; i < size; i++) {
             if (item.equals(data[i])) {
                 return i;
@@ -129,7 +142,7 @@ public class StringList {
     }
 
     // Поиск элемента с конца // Вернуть индекс элемента // или -1 в случае отсутствия.
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
         for (int i = size-1; i >= 0; i--) {
             if (item.equals(data[i])) {
                 return i;
@@ -142,7 +155,7 @@ public class StringList {
     // Вернуть элемент или исключение,
     // если выходит за рамки фактического
     // количества элементов.
-    public String get(int index) {
+    public Integer get(int index) {
         if ((index < 0) || (index > size - 1)) {
             throw new ExceedingSizeException("Индекс выходит за переделы диапазона");
         }
@@ -169,10 +182,45 @@ public class StringList {
     // Создать новый массив
     // из строк в списке
     // и вернуть его.
-    public String[] toArray() {
-        String [] result = new String[size];
+    public Integer[] toArray() {
+        Integer[] result = new Integer[size];
         System.arraycopy(data, 0, result, 0, size);
         return result;
     }
+    public Integer[] sortedSelection() {
+        Integer[] arr = Arrays.copyOf(data, size);
+        int temp;
+        for (int i = 0; i < arr.length - 1; i++) {
+            int minElementIndex = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[j] < arr[minElementIndex]) {
+                    minElementIndex = j;
+                }
+            }
+            temp = arr[i];
+            arr[i] = arr[minElementIndex];
+            arr[minElementIndex] = temp;
+        }
+       return arr;
+    }
+    public boolean contains(Integer element) {
+        Integer[] dataSort = sortedSelection();
+        int min = 0;
+        int max = dataSort.length - 1;
 
+        while (min <= max) {
+            int mid = (min + max) / 2;
+
+            if (Objects.equals(element, dataSort[mid])) {
+                return true;
+            }
+
+            if (element < dataSort[mid]) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return false;
+    }
 }

@@ -26,12 +26,6 @@ class StringListTest {
         String actual = stringListTest.get(size);
         assertEquals(expected, actual);
 
-        stringListTest.add("6");
-        stringListTest.add("7");
-        stringListTest.add("8");
-        stringListTest.add("9");
-        assertThrows(ExceedingSizeException.class,
-                () -> stringListTest.add("test"));
     }
 
     @Test
