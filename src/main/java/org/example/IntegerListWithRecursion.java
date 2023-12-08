@@ -4,6 +4,15 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class IntegerListWithRecursion{
+    private Integer[] data;
+    private int size;
+    private int currentLength;
+
+    public IntegerListWithRecursion(int startLength) {
+        data = new Integer[startLength];
+        size = 0;
+        this.currentLength = startLength;
+    }
   /*  public static void main(String[] args) {
         IntegerListWithRecursion integerListWithRecursion = new IntegerListWithRecursion(3);
         Integer arr[] = new Integer[10];
@@ -30,15 +39,7 @@ public class IntegerListWithRecursion{
         if (i < arr.length - 1) sortedSelection(arr, i+1);
         return arr;
     }
-    private Integer[] data;
-    private int size;
-    private int currentLength;
 
-    public IntegerListWithRecursion(int startLength) {
-        data = new Integer[startLength];
-        size = 0;
-        this.currentLength = startLength;
-    }
     private void grown() {
         currentLength = currentLength + currentLength /2;
         data = Arrays.copyOf(data, currentLength);
