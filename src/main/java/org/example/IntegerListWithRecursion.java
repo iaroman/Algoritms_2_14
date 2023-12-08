@@ -3,22 +3,49 @@ package org.example;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class IntegerList {
+public class IntegerListWithRecursion{
+  /*  public static void main(String[] args) {
+        IntegerListWithRecursion integerListWithRecursion = new IntegerListWithRecursion(3);
+        Integer arr[] = new Integer[10];
+        for (int i = 0; i < 10; i++) {
+            integerListWithRecursion.add(((int)(Math.random() * 31) - 15));
+        }
+        System.out.println(Arrays.toString(integerListWithRecursion.toArray()));
+        System.out.println(integerListWithRecursion.contains(0));
+        System.out.println(Arrays.toString(integerListWithRecursion.sortedTest(arr, 0)));
+    }*/
+    private void swapElements(Integer[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    private Integer[] sortedSelection(Integer[] arr, int i) {
+        int minElementIndex = i;
+        for (int j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[minElementIndex]) {
+                minElementIndex = j;
+            }
+        }
+        swapElements(arr, i, minElementIndex);
+        if (i < arr.length - 1) sortedSelection(arr, i+1);
+        return arr;
+    }
     private Integer[] data;
     private int size;
     private int currentLength;
 
-    public IntegerList(int startLength) {
+    public IntegerListWithRecursion(int startLength) {
         data = new Integer[startLength];
         size = 0;
         this.currentLength = startLength;
     }
+    private void grown() {
+        currentLength = currentLength + currentLength /2;
+        data = Arrays.copyOf(data, currentLength);
+    }
     // Добавление элемента.// Вернуть добавленный элемент// в качестве результата выполнения.
     public Integer add(Integer item) {
-        if (size == currentLength){
-            currentLength = currentLength + currentLength /2;
-            data = Arrays.copyOf(data, currentLength);
-        }
+        if (size == currentLength) grown();
         data[size] = item;
         size++;
         return data[size - 1];
@@ -32,10 +59,7 @@ public class IntegerList {
     // в качестве результата выполнения.
     public Integer add(int index, Integer item) {
         if ((index >= 0) && (index <= size - 1)) {
-            if (size == currentLength) {
-                currentLength = currentLength + currentLength / 2;
-                data = Arrays.copyOf(data, currentLength);
-            }
+            if (size == currentLength) grown();
             for (int i = size; i >= index; i--) {
                 data[i + 1] = data[i];
             }
@@ -56,7 +80,7 @@ public class IntegerList {
         }
         if (this == o) return true;
         if (getClass() != o.getClass()) return false;
-        IntegerList that = (IntegerList) o;
+        IntegerListWithRecursion that = (IntegerListWithRecursion) o;
         return size == that.size && Arrays.equals(data, that.data);
     }
 
@@ -176,24 +200,9 @@ public class IntegerList {
         System.arraycopy(data, 0, result, 0, size);
         return result;
     }
-    public Integer[] sortedSelection() {
-        Integer[] arr = Arrays.copyOf(data, size);
-        int temp;
-        for (int i = 0; i < arr.length - 1; i++) {
-            int minElementIndex = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[j] < arr[minElementIndex]) {
-                    minElementIndex = j;
-                }
-            }
-            temp = arr[i];
-            arr[i] = arr[minElementIndex];
-            arr[minElementIndex] = temp;
-        }
-       return arr;
-    }
     public boolean contains(Integer element) {
-        Integer[] dataSort = sortedSelection();
+        Integer[] dataSort = Arrays.copyOf(data, size);
+        sortedSelection(dataSort, 0);
         int min = 0;
         int max = dataSort.length - 1;
 
